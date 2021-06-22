@@ -1,27 +1,63 @@
-import com.github.javafaker.Faker;
-
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        JDBCConnection jdbc = new JDBCConnection("jdbc:postgresql://localhost:5432/dummyDatabase",
-                                                "postgres", "password");
+        Scanner sc = new Scanner(System.in);
+        ArrayList<String> people = new ArrayList<>();
+        boolean peopleCreated = false;
 
-//        Faker faker = new Faker(); // fake name generator instance
-//        ArrayList<String> people = new ArrayList<>();
-//
-//        for (int i = 0; i < 10; ++i) {
-//            String firstName = faker.name().firstName();
-//            String lastName = faker.name().lastName();
-//            String streetAddress = faker.address().streetAddress();
-//            people.add(firstName + "," + lastName + "," + streetAddress);
-//        }
+//        System.out.print("URL of the Database > "); // jdbc:postgresql://localhost:5432/dummyDatabase
+//        String jdbcURL = sc.nextLine();
+//        System.out.print("username > "); // postgres
+//        String username = sc.nextLine();
+//        System.out.print("password > "); // password
+//        String password = sc.nextLine();
+        String jdbcURL = "jdbc:postgresql://localhost:5432/dummyDatabase";
+        String username = "postgres";
+        String password = "password";
+        JDBCConnection jdbc = new JDBCConnection(jdbcURL, username, password);
 
-        jdbc.insertDataFromSource("test", "test.csv");
+        while (true) {
+            JDBCUtils.printMenu();
+            switch (Integer.parseInt(sc.nextLine())) {
+                default -> System.out.println("Wrong input!");
+                case 1 -> {
+                    System.out.println("Type in the name of the table");
+                    String tableName = sc.nextLine();
+                    System.out.println("Type in the path to the csv file");
+                    String csvPath = sc.nextLine();
+                    jdbc.dumpDataToCsv (tableName, csvPath);
+                }
+                case 2 -> {
+                    System.out.println("How many people to generate?");
+                    int numOfPeople = Integer.parseInt(sc.nextLine());
+                    people = JDBCUtils.generateNames(numOfPeople);
+                    peopleCreated = true;
+                }
+                case 3 -> {
+                    System.out.println("Type in the name of the table");
+                    String tableName = sc.nextLine();
+                    if (peopleCreated) {
+                        jdbc.insertData(tableName, people);
+                    } else {
+                        System.out.println("People names were not generated, generate them and try again!");
+                    }
+                }
+                case 4 -> {
+                    System.out.println("Type in the name of the table");
+                    String tableName = sc.nextLine();
+                    System.out.println("Type in the path to the csv file");
+                    String csvPath = sc.nextLine();
+                    jdbc.insertDataFromCsv(tableName, csvPath);
+                }
+            }
+        }
+
+
+
     }
 
 }

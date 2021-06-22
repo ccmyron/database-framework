@@ -36,7 +36,6 @@ public class JDBCConnection {
                 statement.setString(3, tokens[2]);
                 int rows = statement.executeUpdate();
                 if (rows > 0) {
-                    System.out.println("A new row has been inserted");
                     rowsCount++;
                 }
             }
@@ -48,7 +47,7 @@ public class JDBCConnection {
         }
     }
 
-    public void insertDataFromSource (String tableName, String csvPath) {
+    public void insertDataFromCsv (String tableName, String csvPath) {
         try {
             Connection connection = DriverManager.getConnection(this.jdbcURL, this.username, this.password);
             int rowsCount = 0;
@@ -82,7 +81,7 @@ public class JDBCConnection {
         return null;
     }
 
-    public void dumpDataToCsv (String tableName) {
+    public void dumpDataToCsv (String tableName, String csvPath) {
         try {
             Connection connection = DriverManager.getConnection(this.jdbcURL, this.username, this.password);
 
@@ -90,11 +89,11 @@ public class JDBCConnection {
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(query);
             ResultSetMetaData rsMetaData = result.getMetaData();
-            int columntCount = rsMetaData.getColumnCount();
+            int columnCount = rsMetaData.getColumnCount();
 
             // get the column names (headers)
-            String[] columnNames = new String[columntCount];
-            for (int i = 1; i <= columntCount; ++i) {
+            String[] columnNames = new String[columnCount];
+            for (int i = 1; i <= columnCount; ++i) {
                 columnNames[i - 1] = rsMetaData.getColumnName(i);
             }
             List<String[]> csvContent = new ArrayList<>();
@@ -102,14 +101,14 @@ public class JDBCConnection {
 
             // get every row using column names and write them to csvContent
             while (result.next()) {
-                String[] row = new String[columntCount];
-                for (int i = 1; i <= columntCount; ++i) {
+                String[] row = new String[columnCount];
+                for (int i = 1; i <= columnCount; ++i) {
                     row[i - 1] = result.getString(rsMetaData.getColumnName(i));
                 }
                 csvContent.add(row);
             }
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter("test.csv"))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvPath))) {
                 writer.writeAll(csvContent);
             }
             connection.close();
