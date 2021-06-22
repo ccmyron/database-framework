@@ -25,6 +25,7 @@ public class JDBCUtils {
         System.out.println("2. Create a list of random people");
         System.out.println("3. Populate the database from the list");
         System.out.println("4. Populate the database from a file");
+        System.out.println("5. Exit");
         System.out.print("> ");
     }
 

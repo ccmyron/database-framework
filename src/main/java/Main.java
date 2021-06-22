@@ -9,15 +9,12 @@ public class Main {
         ArrayList<String> people = new ArrayList<>();
         boolean peopleCreated = false;
 
-//        System.out.print("URL of the Database > "); // jdbc:postgresql://localhost:5432/dummyDatabase
-//        String jdbcURL = sc.nextLine();
-//        System.out.print("username > "); // postgres
-//        String username = sc.nextLine();
-//        System.out.print("password > "); // password
-//        String password = sc.nextLine();
-        String jdbcURL = "jdbc:postgresql://localhost:5432/dummyDatabase";
-        String username = "postgres";
-        String password = "password";
+        System.out.print("URL of the Database > "); // jdbc:postgresql://localhost:5432/dummyDatabase
+        String jdbcURL = sc.nextLine();
+        System.out.print("username > "); // postgres
+        String username = sc.nextLine();
+        System.out.print("password > "); // password
+        String password = sc.nextLine();
         JDBCConnection jdbc = new JDBCConnection(jdbcURL, username, password);
 
         while (true) {
@@ -53,11 +50,8 @@ public class Main {
                     String csvPath = sc.nextLine();
                     jdbc.insertDataFromCsv(tableName, csvPath);
                 }
+                case 5 -> System.exit(0);
             }
         }
-
-
-
     }
-
 }

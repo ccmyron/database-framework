@@ -26,10 +26,9 @@ public class JDBCConnection {
         try {
             int rowsCount = 0;
             Connection connection = DriverManager.getConnection(this.jdbcURL, this.username, this.password);
-            for (int i = 0; i < people.size(); ++i) {
+            for (String person : people) {
                 String query = "INSERT INTO " + tableName + "(first_name, last_name, address) VALUES (?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(query);
-                String person = people.get(i);
                 String[] tokens = person.split(",");
                 statement.setString(1, tokens[0]);
                 statement.setString(2, tokens[1]);
