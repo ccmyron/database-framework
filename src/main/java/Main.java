@@ -1,3 +1,5 @@
+import connections.DBConnection;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -15,7 +17,7 @@ public class Main {
         String username = sc.nextLine();
         System.out.print("password > "); // password
         String password = sc.nextLine();
-        JDBCConnection jdbc = new JDBCConnection(jdbcURL, username, password);
+        DBConnection jdbc = new DBConnection(jdbcURL, username, password);
 
         while (true) {
             JDBCUtils.printMenu();

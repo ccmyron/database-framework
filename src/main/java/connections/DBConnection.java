@@ -1,3 +1,5 @@
+package connections;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
@@ -10,13 +12,13 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 
-public class JDBCConnection {
+public class DBConnection {
 
     private final String jdbcURL;
     private final String username;
     private final String password;
 
-    public JDBCConnection (String jdbcURL, String username, String password) {
+    public DBConnection(String jdbcURL, String username, String password) {
         this.jdbcURL = jdbcURL;
         this.username = username;
         this.password = password;
