@@ -13,11 +13,9 @@ public class DataGenerator {
         for (int i = 0; i < number; ++i) {
             String firstName = faker.name().firstName();
             String lastName = faker.name().lastName();
-            String streetAddress = faker.address().streetAddress();
-            people.add(firstName + "," + lastName + "," + streetAddress);
+            people.add(firstName + "," + lastName);
         }
 
         return people;
     }
-
 }

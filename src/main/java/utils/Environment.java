@@ -1,45 +1,85 @@
 package utils;
 
 import connections.DBConnection;
+import connections.QueryFactory;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Environment {
 
     private boolean peopleCreated;
+    private boolean connected;
     private ArrayList<String> people;
+    private DBConnection connection;
+    Scanner sc = new Scanner(System.in);
 
     public Environment() {
         peopleCreated = false;
+        connected = false;
         people = new ArrayList<>();
     }
 
-    public void makeAction() throws StopException {
-        Scanner sc = new Scanner(System.in);
-        printMenu();
+    public void makeAction() throws StopException, SQLException {
+        Printer.printMenu();
+
         switch (ActionType.from(sc.nextLine())) {
             case CONNECT_DATABASE:
-                System.out.print("URL of the Database > "); // jdbc:postgresql://localhost:5432/dummyDatabase
-                String jdbcURL = sc.nextLine();
-                System.out.print("username > "); // postgres
-                String username = sc.nextLine();
-                System.out.print("password > "); // password
-                String password = sc.nextLine();
-                DBConnection connection = new DBConnection(jdbcURL, username, password);
+                Printer.printSqlTypes();
+                this.connect(DatabaseType.from(sc.nextLine()));
+                break;
+            case FREE_QUERY:
+                new QueryFactory().executeQuery(this.connection);
+                break;
+            case LIST_INSERT:
+                break;
+            // TODO: add support for bulk insert
+            case BULK_INSERT:
+                break;
+            case PRINT_TO_CSV:
+                new QueryFactory().printToCsv(this.connection);
+                break;
+            case PRINT_TO_CONSOLE:
+                new QueryFactory().printToConsole(this.connection);
+                break;
+            // TODO: make a way to generate data for any table format
             case CREATE_DATA:
-
+                break;
+            case EXIT:
+                throw new StopException("Exiting...");
         }
     }
 
-    private static void printMenu() {
-        System.out.println("Choose an option");
-        System.out.println("connect to db: Create a connection instance");
-        System.out.println("create list: Create a list of random people");
-        System.out.println("insert list: Populate the database from the list");
-        System.out.println("insert file: Populate the database from a file");
-        System.out.println("output file: Output the database contents to a csv file");
-        System.out.println("exit: Exit");
-        System.out.print("> ");
+    private void connect (DatabaseType database) {
+
+        String jdbcURL;
+        String username;
+        String password;
+        switch (database) {
+            case MS_SQL:
+                // jdbc:sqlserver://localhost;user=sa;password=topPassword1;databaseName=BikeStores
+                System.out.print("URL of the Database > ");
+                jdbcURL = sc.nextLine();
+                connection = new DBConnection(jdbcURL);
+                this.connected = true;
+                break;
+
+            case POSTGRESQL:
+                // jdbc:postgresql://localhost:5432/dummyDatabase
+                System.out.print("URL of the Database > ");
+                jdbcURL = sc.nextLine();
+                // user - postgres
+                System.out.print("username > ");
+                username = sc.nextLine();
+                // password - password
+                System.out.print("password > ");
+                password = sc.nextLine();
+                connection = new DBConnection(jdbcURL, username, password);
+                this.connected = true;
+                break;
+        }
     }
+
 }

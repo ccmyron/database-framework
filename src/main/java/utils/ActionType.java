@@ -1,25 +1,33 @@
 package utils;
 
+import javax.swing.*;
+
 public enum ActionType {
     CONNECT_DATABASE,
+    FREE_QUERY,
+    LIST_INSERT,
+    BULK_INSERT,
+    PRINT_TO_CSV,
+    PRINT_TO_CONSOLE,
     CREATE_DATA,
-    POPULATE_FROM_LIST,
-    POPULATE_FROM_FILE,
-    DUMP_TO_CSV,
     EXIT;
 
     public static ActionType from(String type) {
         switch (type) {
-            case "connect to db":
+            case "connect":
                 return ActionType.CONNECT_DATABASE;
-            case "create list":
+            case "query":
+                return ActionType.FREE_QUERY;
+            case "insert":
+                return ActionType.LIST_INSERT;
+            case "bulk":
+                return ActionType.BULK_INSERT;
+            case "print-csv":
+                return ActionType.PRINT_TO_CSV;
+            case "print-console":
+                return ActionType.PRINT_TO_CONSOLE;
+            case "list":
                 return ActionType.CREATE_DATA;
-            case "insert list":
-                return ActionType.POPULATE_FROM_LIST;
-            case "insert file":
-                return ActionType.POPULATE_FROM_FILE;
-            case "output file":
-                return ActionType.DUMP_TO_CSV;
             case "exit":
                 return ActionType.EXIT;
         }

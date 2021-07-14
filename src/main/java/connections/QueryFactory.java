@@ -12,16 +12,31 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 public class QueryFactory {
 
-    private void executeQuery (DBConnection conn, String query) {
+    Scanner sc = new Scanner(System.in);
 
+    public void executeQuery(DBConnection conn) throws SQLException {
+        System.out.print("Type the query: > ");
+        String query = sc.nextLine();
+
+        Statement statement = conn.getConnection()
+                                  .createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        int rows = statement.executeUpdate(query);
+        System.out.println(rows + " rows updated");
     }
 
-    public void dumpDataToCsv (DBConnection conn, String query, String csvPath) throws SQLException {
+    public void printToCsv(DBConnection conn) throws SQLException {
 
-        Statement statement = conn.getConnection().createStatement();
+        System.out.print("Type the query: > ");
+        String query = sc.nextLine();
+        System.out.print("Type in the path to the csv file > ");
+        String csvPath = sc.nextLine();
+
+        Statement statement = conn.getConnection()
+                                  .createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
         ResultSet result = statement.executeQuery(query);
         ResultSetMetaData rsMetaData = result.getMetaData();
         int columnCount = rsMetaData.getColumnCount();
@@ -31,6 +46,7 @@ public class QueryFactory {
         for (int i = 1; i <= columnCount; ++i) {
             columnNames[i - 1] = rsMetaData.getColumnName(i);
         }
+
         List<String[]> csvContent = new ArrayList<>();
         csvContent.add(columnNames);
 
@@ -46,12 +62,36 @@ public class QueryFactory {
         try (CSVWriter writer = new CSVWriter(new FileWriter(csvPath))) {
             writer.writeAll(csvContent);
         } catch (IOException io) {
-            io.
+            io.printStackTrace();
+        }
+    }
+
+    public void printToConsole(DBConnection conn) throws SQLException {
+        System.out.print("Type the query: > ");
+        String query = sc.nextLine();
+
+        Statement statement = conn.getConnection()
+                                  .createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+        ResultSet queryResult = statement.executeQuery(query);
+        ResultSetMetaData rsMetaData = queryResult.getMetaData();
+
+        int columnCount = rsMetaData.getColumnCount();
+
+        for (int i = 1; i <= columnCount; ++i) {
+            System.out.format("%s ", rsMetaData.getColumnName(i));
+        }
+
+        System.out.print("\n");
+        while (queryResult.next()) {
+            for (int i = 1; i <= columnCount; ++i) {
+                System.out.format("%s ", queryResult.getString(i));
+            }
+            System.out.print("\n");
         }
     }
 
 
-    public void insertDataFromList (DBConnection conn, String tableName,  @NotNull ArrayList<String> people) throws SQLException {
+    public void insertDataFromList(DBConnection conn, String tableName,  @NotNull ArrayList<String> people) throws SQLException {
 
         int rowsCount = 0;
         for (String person : people) {
@@ -69,7 +109,7 @@ public class QueryFactory {
         System.out.printf("%d rows were inserted", rowsCount);
     }
 
-    public void insertDataFromCsv (DBConnection conn, String tableName, String csvPath) throws SQLException {
+    public void insertDataFromCsv(DBConnection conn, String tableName, String csvPath) throws SQLException {
 
         int rowsCount = 0;
         List<String[]> csvData = getDataFromCsv(csvPath);
