@@ -5,7 +5,7 @@ public enum DatabaseType {
     POSTGRESQL,
     MYSQL;
 
-    public static DatabaseType from(String type) {
+    public static DatabaseType from(String type) throws ArgumentException {
         switch (type) {
             case "mssql":
                 return DatabaseType.MS_SQL;
@@ -14,6 +14,6 @@ public enum DatabaseType {
             case "mysql":
                 return DatabaseType.MYSQL;
         }
-        throw new IllegalArgumentException("Invalid argument!");
+        throw new ArgumentException("Invalid argument!");
     }
 }

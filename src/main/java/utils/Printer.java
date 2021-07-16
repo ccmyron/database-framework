@@ -2,14 +2,14 @@ package utils;
 
 public class Printer {
     public static void printMenu() {
-        System.out.println("Choose an option");
+        System.out.println("\nChoose an option");
         System.out.println("\"connect\"       : Create a connection instance");
         System.out.println("\"query\"         : Execute a query");
         System.out.println("\"insert\"        : Populate the database from the list");
         System.out.println("\"bulk\"          : Populate the database from a file");
         System.out.println("\"print-csv\"     : Output the query result to a csv file");
         System.out.println("\"print-console\" : Output the query result to the console");
-        System.out.println("\"list\"          : Output the query result to the console");
+        System.out.println("\"list\"          : Create a list of people");
         System.out.println("\"exit\"          : Exit");
         System.out.print("> ");
     }

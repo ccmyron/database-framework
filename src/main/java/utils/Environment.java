@@ -2,27 +2,23 @@ package utils;
 
 import connections.DBConnection;
 import connections.QueryFactory;
+import testData.DataGenerator;
 
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class Environment {
 
-    private boolean peopleCreated;
     private boolean connected;
-    private ArrayList<String> people;
     private DBConnection connection;
     Scanner sc = new Scanner(System.in);
 
     public Environment() {
-        peopleCreated = false;
         connected = false;
-        people = new ArrayList<>();
     }
 
-    public void makeAction() throws StopException, SQLException {
+    public void makeAction() throws StopException, SQLException, IOException, ArgumentException {
         Printer.printMenu();
 
         switch (ActionType.from(sc.nextLine())) {
@@ -35,8 +31,8 @@ public class Environment {
                 break;
             case LIST_INSERT:
                 break;
-            // TODO: add support for bulk insert
             case BULK_INSERT:
+                new QueryFactory().bulkInsert(this.connection);
                 break;
             case PRINT_TO_CSV:
                 new QueryFactory().printToCsv(this.connection);
@@ -46,6 +42,7 @@ public class Environment {
                 break;
             // TODO: make a way to generate data for any table format
             case CREATE_DATA:
+                DataGenerator.generatePeople();
                 break;
             case EXIT:
                 throw new StopException("Exiting...");
@@ -78,6 +75,10 @@ public class Environment {
                 password = sc.nextLine();
                 connection = new DBConnection(jdbcURL, username, password);
                 this.connected = true;
+                break;
+
+                // TODO: add support for MySQL
+            case MYSQL:
                 break;
         }
     }

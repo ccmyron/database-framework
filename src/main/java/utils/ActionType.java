@@ -1,7 +1,5 @@
 package utils;
 
-import javax.swing.*;
-
 public enum ActionType {
     CONNECT_DATABASE,
     FREE_QUERY,
@@ -12,7 +10,7 @@ public enum ActionType {
     CREATE_DATA,
     EXIT;
 
-    public static ActionType from(String type) {
+    public static ActionType from(String type) throws ArgumentException {
         switch (type) {
             case "connect":
                 return ActionType.CONNECT_DATABASE;
@@ -32,6 +30,6 @@ public enum ActionType {
                 return ActionType.EXIT;
         }
 
-        throw new IllegalArgumentException("Invalid argument!");
+        throw new ArgumentException("Invalid argument!");
     }
 }

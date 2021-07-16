@@ -1,13 +1,12 @@
 package connections;
 
+import com.microsoft.sqlserver.jdbc.SQLServerBulkCopy;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +40,7 @@ public class QueryFactory {
         ResultSetMetaData rsMetaData = result.getMetaData();
         int columnCount = rsMetaData.getColumnCount();
 
-        // get the column names (headers)
+        /* get the column names (headers) */
         String[] columnNames = new String[columnCount];
         for (int i = 1; i <= columnCount; ++i) {
             columnNames[i - 1] = rsMetaData.getColumnName(i);
@@ -50,7 +49,7 @@ public class QueryFactory {
         List<String[]> csvContent = new ArrayList<>();
         csvContent.add(columnNames);
 
-        // get every row using column names and write them to csvContent
+        /* get every row using column names and write them to csvContent */
         while (result.next()) {
             String[] row = new String[columnCount];
             for (int i = 1; i <= columnCount; ++i) {
@@ -59,6 +58,7 @@ public class QueryFactory {
             csvContent.add(row);
         }
 
+        /* Write the contents to the csv file */
         try (CSVWriter writer = new CSVWriter(new FileWriter(csvPath))) {
             writer.writeAll(csvContent);
         } catch (IOException io) {
@@ -70,8 +70,9 @@ public class QueryFactory {
         System.out.print("Type the query: > ");
         String query = sc.nextLine();
 
-        Statement statement = conn.getConnection()
-                                  .createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+        Statement statement = conn.getConnection().createStatement(
+                                          ResultSet.TYPE_SCROLL_INSENSITIVE,
+                                          ResultSet.CONCUR_READ_ONLY);
         ResultSet queryResult = statement.executeQuery(query);
         ResultSetMetaData rsMetaData = queryResult.getMetaData();
 
@@ -90,8 +91,38 @@ public class QueryFactory {
         }
     }
 
+    public void bulkInsert(DBConnection conn) throws SQLException {
+        System.out.print("Type the table name: > ");
+        String tableName = sc.nextLine();
+        System.out.print("Type in the path to the csv file > ");
+        String csvPath = sc.nextLine();
 
-    public void insertDataFromList(DBConnection conn, String tableName,  @NotNull ArrayList<String> people) throws SQLException {
+
+
+         try (Statement statement = conn.getConnection().createStatement(
+                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_READ_ONLY)) {
+             int queryResult = statement.executeUpdate(
+                     "BULK INSERT " + tableName +
+                             " FROM " + csvPath +
+                             "WITH\n" +
+                             "(\n" +
+                             "FIRSTROW = 1,\n" +
+                             "FIELDTERMINATOR = ',',\n" +
+                             "ROWTERMINATOR = '\\n'\n" +
+                             ");"
+             );
+             System.out.println(queryResult + " rows were inserted");
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+
+    }
+
+    public void insertDataFromList(DBConnection conn,
+                                   String tableName,
+                                   @NotNull ArrayList<String> people
+    ) throws SQLException {
 
         int rowsCount = 0;
         for (String person : people) {
