@@ -1,15 +1,13 @@
-import javafx.scene.paint.Stop;
 import utils.ArgumentException;
-import utils.Environment;
 import utils.StopException;
+import utils.Environment;
 
-import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ArgumentException {
         Environment environment = new Environment();
         while (true) {
             try {

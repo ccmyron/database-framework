@@ -11,6 +11,11 @@ import java.util.Scanner;
 
 public class DataGenerator {
 
+    /**
+     *  Generate n entries of people (first names, last names and addresses).
+     *  Outputs the list of people to a csv file.
+     */
+
     public static void generatePeople() throws IOException {
         Faker faker = new Faker();
         Scanner sc = new Scanner(System.in);

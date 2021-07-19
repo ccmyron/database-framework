@@ -17,6 +17,13 @@ public class QueryFactory {
 
     Scanner sc = new Scanner(System.in);
 
+
+    /**
+     *  Execute a free query. Used for CREATE, UPDATE and DELETE
+     *
+     * @param conn database connection instance
+     */
+
     public void executeQuery(DBConnection conn) throws SQLException {
         System.out.print("Type the query: > ");
         String query = sc.nextLine();
@@ -26,6 +33,14 @@ public class QueryFactory {
         int rows = statement.executeUpdate(query);
         System.out.println(rows + " rows updated");
     }
+
+
+    /**
+     *  Execute a query and print the response to a csv file.
+     *  Used for READ.
+     *
+     * @param conn database connection instance
+     */
 
     public void printToCsv(DBConnection conn) throws SQLException {
 
@@ -66,6 +81,14 @@ public class QueryFactory {
         }
     }
 
+
+    /**
+     *  Execute a query and print the response to the console.
+     *  Used for READ.
+     *
+     * @param conn database connection instance
+     */
+
     public void printToConsole(DBConnection conn) throws SQLException {
         System.out.print("Type the query: > ");
         String query = sc.nextLine();
@@ -90,6 +113,14 @@ public class QueryFactory {
             System.out.print("\n");
         }
     }
+
+
+    /**
+     *  Execute a bulk insert query.
+     *  Used for CREATE and UPDATE.
+     *
+     * @param conn database connection instance
+     */
 
     public void bulkInsert(DBConnection conn) throws SQLException {
         System.out.print("Type the table name: > ");
@@ -119,6 +150,8 @@ public class QueryFactory {
 
     }
 
+    // TODO: make this function accept different types of tables
+
     public void insertDataFromList(DBConnection conn,
                                    String tableName,
                                    @NotNull ArrayList<String> people
@@ -140,6 +173,8 @@ public class QueryFactory {
         System.out.printf("%d rows were inserted", rowsCount);
     }
 
+    // TODO: make this function accept different types of tables
+
     public void insertDataFromCsv(DBConnection conn, String tableName, String csvPath) throws SQLException {
 
         int rowsCount = 0;
@@ -157,6 +192,13 @@ public class QueryFactory {
         }
         System.out.printf("%d rows were inserted", rowsCount);
     }
+
+    /**
+     *  Read the contents of a csv file and save them into a List of String arrays.
+     *
+     * @param csvPath path to the csv file
+     * @return List<String[]>
+     */
 
     public List<String[]> getDataFromCsv(String csvPath) {
         try (CSVReader reader = new CSVReader(new FileReader(csvPath))) {

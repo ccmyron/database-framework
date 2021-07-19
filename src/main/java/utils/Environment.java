@@ -10,13 +10,25 @@ import java.util.Scanner;
 
 public class Environment {
 
-    private boolean connected;
     private DBConnection connection;
-    Scanner sc = new Scanner(System.in);
+    private boolean connected = false;
+    private final Scanner sc = new Scanner(System.in);
 
-    public Environment() {
-        connected = false;
+    public Environment() throws ArgumentException {
+        while (!connected) {
+            Printer.printSqlTypes();
+            this.connect(DatabaseType.from(sc.nextLine()));
+        }
     }
+
+
+    /**
+     *  Control the program flow based on user input.
+     *
+     * @see ActionType
+     * @see DatabaseType
+     * @see QueryFactory
+     */
 
     public void makeAction() throws StopException, SQLException, IOException, ArgumentException {
         Printer.printMenu();
@@ -48,6 +60,14 @@ public class Environment {
                 throw new StopException("Exiting...");
         }
     }
+
+
+    /**
+     *  Create a new connection based on the type of sql needed
+     *
+     * @param database database type
+     * @see DatabaseType
+     */
 
     private void connect (DatabaseType database) {
 
