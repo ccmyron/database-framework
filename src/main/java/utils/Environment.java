@@ -2,6 +2,8 @@ package utils;
 
 import connections.DBConnection;
 import connections.QueryFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import testData.DataGenerator;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ public class Environment {
     private DBConnection connection;
     private boolean connected = false;
     private final Scanner sc = new Scanner(System.in);
+    Logger log = LogManager.getLogger(Environment.class);
 
     public Environment() throws ArgumentException {
         while (!connected) {
@@ -57,7 +60,8 @@ public class Environment {
                 DataGenerator.generatePeople();
                 break;
             case EXIT:
-                throw new StopException("Exiting...");
+                log.info("Exiting");
+                throw new StopException("");
         }
     }
 
@@ -102,5 +106,4 @@ public class Environment {
                 break;
         }
     }
-
 }

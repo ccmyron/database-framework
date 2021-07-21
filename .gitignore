@@ -1,4 +1,7 @@
 target/
-test-data/
+test_data/
+logs/
+output_csv/
 
+*.log
 *.csv

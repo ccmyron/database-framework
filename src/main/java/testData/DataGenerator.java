@@ -2,6 +2,8 @@ package testData;
 
 import com.github.javafaker.Faker;
 import com.opencsv.CSVWriter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,12 +13,14 @@ import java.util.Scanner;
 
 public class DataGenerator {
 
+    static Logger log = LogManager.getLogger(DataGenerator.class);
+
     /**
      *  Generate n entries of people (first names, last names and addresses).
      *  Outputs the list of people to a csv file.
      */
 
-    public static void generatePeople() throws IOException {
+    public static void generatePeople() {
         Faker faker = new Faker();
         Scanner sc = new Scanner(System.in);
         List<String[]> people = new ArrayList<>();
@@ -24,7 +28,7 @@ public class DataGenerator {
         System.out.print("How many people do you wish to generate?\n> ");
         int number = Integer.parseInt(sc.nextLine());
         System.out.print("Type in the path to the csv\n> ");
-        String csvPath = "test-data\\" + sc.nextLine();
+        String csvPath = "test_data/" + sc.nextLine();
 
         for (int i = 0; i < number; ++i) {
             String[] row = new String[4];
@@ -42,7 +46,7 @@ public class DataGenerator {
             writer.writeAll(people);
             writer.flush();
         } catch (IOException io) {
-            io.printStackTrace();
+            log.error(io);
         }
     }
 }
